@@ -5,7 +5,7 @@
 #
 #----------------------------------
 FC=gfortran
-FFLAGS=-O3 -Wall -Wextra -pedantic -std=f2008
+FFLAGS=-O3 -Wall -Wextra -pedantic -std=f2008 -fdefault-real-8 -fdefault-double-8
 
 SRC=config.f90 force.f90 step.f90 nbody.f90
 OBJ=${SRC:.f90=.o}

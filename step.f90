@@ -2,30 +2,53 @@ module step
  use config
  use force
  implicit none
- integer, parameter :: nmethods = 6
+ integer, parameter :: nmethods = 7
  character(len=*), parameter :: method(nmethods) = &
-   (/'verlet  ', &
-     'leapfrog',&
-     'rk2     ',&
-     'rk4     ',&
-     'fr4     ',&
-     'pefrl   '/)
+   (/'verlet   ', &
+     'verletind', &
+     'leapfrog ',&
+     'rk2      ',&
+     'rk4      ',&
+     'fr4      ',&
+     'pefrl    '/)
 
 contains
  
- subroutine step_verlet(x,v,f,dt,nf)
+ subroutine step_verlet(x,v,f,dt,nf,active)
   real, dimension(ndim), intent(inout) :: x,v,f
   real, intent(in) :: dt
   integer, intent(inout) :: nf
+  logical, intent(in) :: active
   real, dimension(ndim) :: fprev
 
   fprev = f
   x = x + dt*v + 0.5*dt**2*f
-  call get_force(f,x)
-  v = v + 0.5*dt*(f + fprev)  
+  v = v + dt*f
+  if (active) call get_force(f,x)
+  v = v + 0.5*dt*(f - fprev)
   nf = nf + 1
 
  end subroutine step_verlet
+
+ subroutine step_verletind(x,v,f,dt,nf,active,x0,v0)
+  real, dimension(ndim), intent(inout) :: x,v,f,x0,v0
+  real, intent(in) :: dt
+  integer, intent(inout) :: nf
+  logical, intent(in) :: active
+  real, dimension(ndim) :: fprev
+
+  fprev = f
+  x = x0 + dt*v0 + 0.5*dt**2*f
+  v = v0 + dt*f
+  if (active) call get_force(f,x)
+  v = v + 0.5*dt*(f - fprev)
+  nf = nf + 1
+  if (active) then
+     x0 = x
+     v0 = v
+  endif
+
+ end subroutine step_verletind
 
  subroutine step_leapfrog(x,v,f,dt,nf)
   real, dimension(ndim), intent(inout) :: x,v,f
