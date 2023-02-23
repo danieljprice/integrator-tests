@@ -20,7 +20,7 @@ The integrators tested are:
 - Second order Runge Kutta method
 - Second order symplectic Leapfrog method
 - Second order leapfrog in velocity verlet form (symplectic)
-- Second order verlet with adaptive timesteps
+- Second order verlet with checks related to individual particle timesteps
 - Fourth order Runge Kutta method
 - Forest-Ruth 4th order symplectic
 - Position-Extended Forest-Ruth Like (PEFRL) 4th order symplectic
